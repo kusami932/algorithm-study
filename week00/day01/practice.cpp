@@ -38,6 +38,10 @@ int main() {
     cin >> text;
 
     array<int, 26> frequency{};
+    /*
+    {}를 사용하면 모든 원소가 0으로 초기화된다 => [0, 0, 0, ..., 0]
+    초기화를 빼면 각 원소에 어떤 값이 들어 있는지 보장되지 않을 수 있으므로 반드시 초기화한다
+    */
 
     for (char ch : text) {
         int index = ch - 'a';
