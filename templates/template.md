@@ -1,5 +1,5 @@
 권장 컴파일 명령어
-clang++ -std=c++17 -Wall -Wextra -Wpedantic practice.cpp -o practice
+clang++ -std=c++17 / -Wall -Wextra -Wpedantic / practice.cpp / -o practice
 
 옵션의 의미는 다음과 같다.
 
