@@ -1,0 +1,159 @@
+코드 읽기, 기본 자료구조 사용, 간단한 문제 구현
+
+이 코드가 정답을 출력하는가 =>
+
+	입력이 커져도 이 알고리즘을 사용할 수 있는가
+	왜 이 알고리즘이 충분히 빠르다고 말할 수 있는가
+	같은 문제를 해결하는 두 알고리즘 중 어느 것이 더 좋은가
+	시간을 줄이기 위해서 메모리를 더 써도 되는가
+	
+입력 크기가 증가할 때 필요한 연산량이 얼마나 빠르게 증가하는가 (시간 복잡도)
+실제 초 단위 시간을 직접 비교하기보다
+	T(n): 입력 크기가 n일 때 알고리즘이 수행하는 기본 연산의 개수
+	
+	Input Size n의 정의
+	
+	배열 문제: vector<int> arr -----> n = arr.size() (배열 원소 개수)
+	문자열 문제: string s ------> n = |s| (문자열 길이)
+	그래프 문제:
+		입력 크기가 하나가 아닐 수 있음 (V = 정점 수 / E = 간선 수)
+			BFS --> O (V + E)
+	배열 두개: vector<int> a, vector<int> b
+		두 배열의 크기가 독립적이라면 n = |a|, m = |b|
+		for (int x : a), for (int y : b) ===> O (n + m)
+	
+기본 연산과 cost model
+	constant-time operation: O(1) 연산
+	x = 10, x++, a + b, a < b, arr[i]   -----> 이런 간단한 연산 하나는 1개의 연산
+		** 이런 추상화를 흔히 RAM Model이라고 생각해도 좋음
+	
+	O(1) -- Constant Time (int x = arr[0];)
+		배열 길이와 관련 없이 한 원소에 접근한다: T(n) = 1, 시간복잡도 O(1)
+			int result = x + y; / if (result > 10) result--
+			• 여러 줄이 있다고 해도 입력 크기 n에 따라 연산 횟수가 증가하지 않음
+			T(n) = 7이라고 해도 asymptotic complexity는 O(1)
+		
+** Big-O에서는 고정된 상수 개수의 연산은 하나의 constant로 취급한다
+
+	O(n) -- Linear Time: for (int i ... i++) 	cout << arr[i] 
+		반복 횟수 n번 -- T(n) = cn + c0
+		i = 0 / i < n: n + 1번 / i++: n번 / array access: n번
+			=> T(n) = 3n + 2 => O(n)
+			
+	Big-O에서는 growth rate, 즉 성장률에 관심이 있음
+		n이 충분히 크면 둘 다 모두 linear하게 증가함 (몇 배 차이더라도 n에 비례함)
+		• 알고리즘 분석에서는 상수 계수를 제거함 (3n + 2 ---> n)
+		
+	Lower-order term 제거하기
+		T(n) = 4n^2 + 100n + 500 = O(n^2)
+			가장 지배적인 항: n ^ 2
+	
+	함수 f(n)이 O(g(n))이라는 것: f(n) = O(g(n))
+		어떤 양의 상수 c와 n0가 존재해서 
+			f(n) <= cg(n)d이 모든 n >= n0에서 성립한다
+			
+		** 입력이 충분히 커진 이후에는 f(n)이 어떤 상수배 g(n)보다 빠르게 증가하지 않음
+			
+			f(n) = 3n + 2에 대해, g(n) = n일 때
+			충분히 큰 n에서
+				3n + 2 <= 4n 이므로 f(n) = O(n)
+	
+	Big-O는 정확한 시간복잡도가 아님: upper bound (상한)
+		T(n) = n이면
+			T(n) = O(n)이지만 T(n) = O(n^2)도 틀리지 않음
+			• 충분히 큰 n에서 n < n^2이기 때문
+			
+			보통 가능한 한 tight bound를 원하기 때문에 Theta가 중요해짐
+	
+Big-Omega (asymptotic lower bound)
+	f(n) = Omega(g(n))
+		충분히 큰 n에서 f(n) >= cg(n)인 어떤 양의 상수 c가 존재함
+		=> f(n)은 최소한 g(n) 정도의 속도로 성장한다
+			** f(n) = 3n^2 + 5n + 2라면 f(n) = Omega(n^2)
+
+Big-Theta (tight bound)
+	f(n) = Theta (g(n))
+		=> f(n) = O(g(n)) AND f(n) = Omega(g(n))
+		c1g(n) <= f(n) <= c2g(n)
+		
+	f(n)과 g(n)의 성장률이 같은 급이다
+	
+	3n^2 + 10n + 100은 Theta (n ^ 2)
+	
+	f(n) = 5n^2 + 3n + 10이면
+		f(n) = O(n^2) 이고 f(n) = Omega(n ^ 2) 이므로 f(n) = Theta (n ^ 2)
+			• f(n)이 두 상수배 g(n) 사이에 끼어 있는 것
+	
+Big-O =/= Worst Case
+	Big-O: 상한 표기법 / worst-case: 어떤 입력을 분석하고 있는가
+		array linear search find(vector<int>& arr, int target)
+			best case: 찾는 값이 첫 번째 원소일 때
+				• Tbest(n) = Theta(1)
+			worst case: 찾는 값이 마지막 원소 혹은 없을 때
+				• Tworst(n) = Theta(n)
+		
+		Average case: 특정 확률 분포를 가정하면 
+			평균적으로 얼마나 많은 연산이 필요한지를 분석하기
+			• 대략 절반이면 n / 2이고 Theta(n)
+
+worst-case analysis
+	아무리 나쁜 입력이 들어와도 이 정도보다 오래 걸리지는 않는다
+		T worst(n) = O (n log n)
+			-> 입력이 어떤 식으로 배치되어 있든 그 상한을 보장할 수 있음
+		
+
+	O(n ^ 2)	-- quadratic time
+		이중 반복문에서 주로 나옴 (for-for, nested 중첩 수행)
+		반복문이 연속해서 나오면 T(n) = n + n = 2n => O(n) (sequential)
+		
+		O(f(n) + g(n)에서 g(n)이 더 빠르게 성장한다면 O(g(n))으로 단순화
+		
+	O (log n) -- logarithmic time
+		반복 횟수 k일 때, k번 반복한 이후에는 i = 2 ^ k
+			반복문이 종료되는 시점: 2^k >= n
+			k >= log2(n) ==> Theta (log n)
+		
+		로그가 나타나는 핵심 패턴: 문제의 크기를 매번 일정한 비율로 줄인다 (n, n/2, n/4 ...)
+		로그의 밑은 중요하지 않다
+	
+	O (n log n)
+		for (int i = 0; i < n; i++) {
+			for (int j = 1; j < n; j *= 2) {
+			
+			(outer loop: n / inner loop: log n) => n * log n
+		
+		Merge Sort, Heap Sort, efficient comparison sorting, D&D
+	
+	O(2^n) -- Exponential Time
+		부분집합을 전부 확인하는 경우: {a, b, c} = 2 x 2 x 2 = 2^3 = 8
+		원소가 n개면 2 ^ n개의 부분집합이 존재함
+	
+	O(n!) -- Factorial Time
+		n개의 원소를 모든 가능한 순서로 배치하는 경우
+			n개 원소의 순열 개수: n! (모든 순열 생성 혹은 검사하는 알고리즘)
+	
+원소 접근 < 절반 줄이기 < 배열 흝기 < 효율적 정렬 < 모든 원소 쌍 비교 < 부분집합 < 순열
+
+공간복잡도 - 메모리 사용
+	int sum = 0
+	for (int x : arr) sum += x;
+		입력 배열을 제외하고 사용하는 추가 변수: sum, x 
+		 - 입력 크기와 관련 없이 일정한 메모리 사용 => auxiliary space는 O(1)
+	
+	vector<int> copy(n);
+	for (int i = 0; i < n; i++) {
+		copy[i] = arr[i]
+		• 크기 n의 새로운 배열을 만든다 (추가 공간은 O(n))
+	
+Auxiliary Space, Total Space
+	입력까지 포함한 전체 메모리 vs 입력 이외에 추가로 사용하는 메모리
+
+재귀와 공간복잡도
+	call stack depth가 n이므로 공간복잡도 역시 O(n)
+
+시간-공간 trade-off: 메모리를 더 써서 시간을 줄일 것인가
+
+	중복 원소 검사
+	방법 A: 모든 쌍 비교 - 시간 O(n ^ 2), 추가 공간 O(1)
+	방법 B: Hash Set - 시간 O(n), 추가 공간 O(n)
+		• 시간을 줄이는 대신 메모리를 더 사용	
